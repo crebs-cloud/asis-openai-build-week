@@ -1,0 +1,12 @@
+{
+  "id": "judge-event-0001",
+  "eventType": "Microsoft.Communication.AdvancedMessageReceived",
+  "eventTime": "2026-07-20T18:00:00.000Z",
+  "data": {
+    "messageId": "judge-message-0001",
+    "from": "whatsapp:+50680000000",
+    "content": "Hola, necesito ayuda para evaluar la continuidad de mi negocio.",
+    "messageType": "text",
+    "receivedTimestamp": "2026-07-20T18:00:00.000Z"
+  }
+}

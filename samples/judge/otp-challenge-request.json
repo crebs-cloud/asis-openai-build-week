@@ -1,0 +1,9 @@
+{
+  "phone": "+50680000000",
+  "client_session_id": "judge_browser_session_1234567890",
+  "consent": {
+    "accepted": true,
+    "version": "otp-whatsapp-v1",
+    "accepted_at": "2026-07-20T18:00:00.000Z"
+  }
+}

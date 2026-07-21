@@ -1,0 +1,108 @@
+{
+  "schema_version": "1.0.0",
+  "contract_id": "crebs.website-whatsapp.otp",
+  "contract_version": "1.0.0",
+  "status": "implementation_candidate",
+  "artifact_type": "contract",
+  "authority": {
+    "canonical_repository": "crebs-cloud/asis-openai-build-week",
+    "canonical_path": "contracts/crebs-website-whatsapp-otp.v1.json",
+    "runtime_repository": "private_operational_repository",
+    "runtime_mirror_path": "contracts/crebs-website-whatsapp-otp.v1.json"
+  },
+  "channel": {
+    "provider": "azure_communication_services_whatsapp",
+    "official_number_reference": "ASIS_PUBLIC_WHATSAPP_NUMBER",
+    "channel_registration_reference": "WHATSAPP_CHANNEL_ID",
+    "literal_number_allowed_in_contract_or_logs": false
+  },
+  "deployment": {
+    "browser_api_base_reference": "ASIS_OTP_API_BASE_URL",
+    "default_browser_api_base": "/api",
+    "same_site_api_required_for_session_cookie": true,
+    "allowed_origins_reference": "ASIS_OTP_ALLOWED_ORIGINS",
+    "wildcard_origin_allowed": false
+  },
+  "consent": {
+    "version": "otp-whatsapp-v1",
+    "required_before_delivery": true,
+    "required_fields": ["accepted", "accepted_at", "version"],
+    "purpose": "Deliver a one-time verification code through the official Asis WhatsApp channel.",
+    "reuse_for_marketing_allowed": false
+  },
+  "api": {
+    "content_type": "application/json",
+    "cache_control": "no-store",
+    "endpoints": [
+      {
+        "operation_id": "createOtpChallenge",
+        "method": "POST",
+        "path": "/api/asis/otp/challenges",
+        "request_fields": ["phone", "client_session_id", "consent"],
+        "success_status": 202,
+        "success_fields": ["challenge_id", "masked_destination", "expires_in_seconds", "resend_after_seconds"]
+      },
+      {
+        "operation_id": "verifyOtpChallenge",
+        "method": "POST",
+        "path": "/api/asis/otp/verifications",
+        "request_fields": ["challenge_id", "client_session_id", "code"],
+        "success_status": 200,
+        "success_fields": ["verified", "session_expires_at"],
+        "session_transport": "secure_http_only_cookie"
+      },
+      {
+        "operation_id": "validateOtpSession",
+        "method": "POST",
+        "path": "/api/asis/otp/sessions/validate",
+        "request_fields": ["challenge_id", "client_session_id"],
+        "success_status": 200,
+        "success_fields": ["valid", "session_expires_at"],
+        "session_transport": "secure_http_only_cookie"
+      }
+    ]
+  },
+  "session_binding": {
+    "browser_binding": "random_client_session_id",
+    "server_storage": "hmac_sha256_hash_only",
+    "session_token_transport": "Secure HttpOnly SameSite=Strict cookie",
+    "browser_token_storage_allowed": false,
+    "session_ttl_seconds": 1800,
+    "challenge_reuse_allowed": false
+  },
+  "challenge_security": {
+    "code_digits": 6,
+    "code_ttl_seconds": 300,
+    "maximum_verification_attempts": 5,
+    "code_hash": "scrypt_with_per_challenge_random_salt_and_server_pepper",
+    "identifier_hash": "HMAC-SHA-256 with OTP_HASH_PEPPER",
+    "raw_code_persistence_allowed": false,
+    "raw_phone_persistence_allowed": false
+  },
+  "throttling": {
+    "window_seconds": 900,
+    "per_phone_challenges": 3,
+    "per_ip_challenges": 10,
+    "minimum_resend_seconds": 60,
+    "rate_limit_status": 429,
+    "retry_after_header_required": true
+  },
+  "retention": {
+    "challenge_metadata_ttl_seconds": 86400,
+    "consent_metadata_ttl_seconds": 86400,
+    "session_ttl_seconds": 1800,
+    "cosmos_container_reference": "COSMOS_OTP_CONTAINER",
+    "cosmos_partition_key": "/id",
+    "cosmos_default_ttl_required": -1
+  },
+  "failure_behavior": {
+    "invalid_request_status": 400,
+    "origin_rejected_status": 403,
+    "verification_failed_status": 401,
+    "rate_limited_status": 429,
+    "delivery_unavailable_status": 503,
+    "unexpected_failure_status": 500,
+    "phone_or_account_enumeration_allowed": false,
+    "codes_tokens_phone_or_raw_request_logging_allowed": false
+  }
+}
