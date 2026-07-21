@@ -151,6 +151,13 @@ then grounded those decisions in code, tests, documentation, and CI.
 - Core work: contract design, OTP security, webhook layering, adapters, provider
   gates, CI, and production validation.
 
+Asis existed before OpenAI Build Week. Judges should evaluate the meaningful
+extension created after the submission period opened: the versioned
+website-to-WhatsApp contract, server-side OTP security boundary, layered
+webhook, provider adapters, and their focused tests. The dated baseline,
+source commit, change summary, and public-file mapping are recorded in
+[`docs/HACKATHON_PROVENANCE.md`](docs/HACKATHON_PROVENANCE.md).
+
 ## Optional provider configuration
 
 Copy [`.env.example`](.env.example) as a variable inventory only. The public
